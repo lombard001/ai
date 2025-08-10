@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cache System Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #3367d6;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            border-left: 4px solid #4285f4;
+        }
+        .cache-info {
+            background: #e8f5e8;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        .api-info {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+        .error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4285f4;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .cache-list {
+            margin-top: 30px;
+        }
+        .cache-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #28a745;
+        }
+        .cache-question {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .cache-answer {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .cache-date {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+        }
+        .clear-cache {
+            background: #dc3545;
+            margin-left: 10px;
+        }
+        .clear-cache:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Cache System Demo</h1>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="cacheHits">0</div>
+                <div class="stat-label">Cache Hits</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="apiCalls">0</div>
+                <div class="stat-label">API Calls</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalQuestions">0</div>
+                <div class="stat-label">Total Questions</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="apiKey">Google AI API Key:</label>
+            <input type="password" id="apiKey" placeholder="API anahtarınızı girin...">
+        </div>
+
+        <div class="input-group">
+            <label for="cacheApiKey">JSONBin.io API Key (Opsiyonel):</label>
+            <input type="password" id="cacheApiKey" placeholder="Cache için JSONBin.io API key...">
+        </div>
+
+        <div class="input-group">
+            <label for="question">Soru:</label>
+            <textarea id="question" rows="3" placeholder="Sorunuzu yazın..."></textarea>
+        </div>
+
+        <button id="askButton" onclick="askQuestion()">Soru Sor</button>
+        <button class="clear-cache" onclick="clearCache()">Cache Temizle</button>
+
+        <div id="response"></div>
+
+        <div class="cache-list">
+            <h3>Cached Questions & Answers</h3>
+            <div id="cacheList"></div>
+        </div>
+    </div>
+
+    <script src="ai-cache.js"></script>
+</body>
+</html>
