@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cache API</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .endpoint {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        .method {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+        .url {
+            font-family: 'Courier New', monospace;
+            color: #FFD700;
+        }
+        .description {
+            color: #E0E0E0;
+            margin-top: 5px;
+        }
+        .test-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(76, 175, 80, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(76, 175, 80, 0.4);
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Cache API</h1>
+        <p style="text-align: center; font-size: 1.2em; margin-bottom: 30px;">
+            Cloudflare Pages üzerinde çalışan AI soru-cevap cache sistemi
+        </p>
+        
+        <h2>📍 API Endpoints</h2>
+        
+        <div class="endpoint">
+            <div><span class="method">GET</span><span class="url">/api</span></div>
+            <div class="description">API bilgileri ve endpoint listesi</div>
+        </div>
+        
+        <div class="endpoint">
+            <div><span class="method">GET</span><span class="url">/api/search?q=soru</span></div>
+            <div class="description">Belirli bir soru için cache'de arama yap</div>
+        </div>
+        
+        <div class="endpoint">
+            <div><span class="method">POST</span><span class="url">/api/save</span></div>
+            <div class="description">Yeni soru-cevap çiftini kaydet</div>
+        </div>
+        
+        <div class="endpoint">
+            <div><span class="method">GET</span><span class="url">/api/questions</span></div>
+            <div class="description">Tüm kayıtlı soruları listele</div>
+        </div>
+        
+        <div class="endpoint">
+            <div><span class="method">GET</span><span class="url">/api/stats</span></div>
+            <div class="description">Sistem istatistikleri</div>
+        </div>
+        
+        <div class="endpoint">
+            <div><span class="method">DELETE</span><span class="url">/api/clear</span></div>
+            <div class="description">Tüm cache'i temizle</div>
+        </div>
+        
+        <div class="endpoint">
+            <div><span class="method">GET</span><span class="url">/api/health</span></div>
+            <div class="description">Sistem sağlık kontrolü</div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Test Araçları</h3>
+            <button class="btn" onclick="testEndpoint('/api')">API Bilgisi</button>
+            <button class="btn" onclick="testEndpoint('/api/stats')">İstatistikler</button>
+            <button class="btn" onclick="testEndpoint('/api/questions')">Sorular</button>
+            <button class="btn" onclick="testEndpoint('/api/health')">Health Check</button>
+            <button class="btn" onclick="testSearch()">Arama Testi</button>
+            <button class="btn" onclick="testSave()">Kayıt Testi</button>
+            
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testEndpoint(endpoint) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function testSearch() {
+            const question = prompt('Aranacak soruyu girin:');
+            if (!question) return;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Searching...';
+            
+            try {
+                const response = await fetch(`/api/search?q=${encodeURIComponent(question)}`);
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function testSave() {
+            const question = prompt('Soru girin:');
+            if (!question) return;
+            
+            const answer = prompt('Cevap girin:');
+            if (!answer) return;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Saving...';
+            
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question, answer })
+                });
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
