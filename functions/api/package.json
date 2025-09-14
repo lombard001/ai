@@ -1,0 +1,13 @@
+{
+  "name": "ai-cache-api-pages",
+  "version": "1.0.0",
+  "description": "AI Soru-Cevap Cache API for Cloudflare Pages",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static build - no build step needed'",
+    "dev": "echo 'Use Cloudflare Pages dev server'"
+  },
+  "keywords": ["ai", "cache", "api", "cloudflare-pages"],
+  "author": "Your Name",
+  "license": "MIT"
+}
